@@ -27,7 +27,12 @@ if (settings.HID=="kb" || settings.HID=="kbmedia") {
 	setWatch(find, BTN4);
 	setWatch(find, BTN5);
 
-}else{
-	g.setColor(0xf800);
-	g.drawString("enable HID!", g.getWidth()/2, g.getHeight()/2);
+}else {
+  E.showPrompt("Enable HID?",{title:"HID disabled"}).then(function(enable) {
+    if (enable) {
+      settings.HID = "kbmedia";
+      require("Storage").write('setting.json', settings);
+      setTimeout(load, 1000, "hidcam.app.js");
+    } else setTimeout(load, 1000);
+  });
 }
