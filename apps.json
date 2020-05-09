@@ -1690,5 +1690,19 @@
       {"name":"getup.settings.js","url":"settings.js"},
       {"name":"getup.img","url":"app-icon.js","evaluate":true}
     ]
+  },
+{ "id": "pokewatch",
+    "name": "Pokewatch",
+    "shortName":"Pokewatch",
+    "icon": "app.png",
+    "version":"0.01",
+    "description": "Pokemon styled clock",
+    "tags": "clock",
+    "readme": "README.md",
+    "allow_emulator": true,
+    "storage": [
+        {"name":"pokewatch.app.js","url":"app.js"},
+        {"name":"pokewatch.img","url":"app-icon.js","evaluate":true}
+    ]
   }
 ]
