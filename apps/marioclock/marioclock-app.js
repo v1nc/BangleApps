@@ -22,11 +22,11 @@ let brightness = 1;
 let intervalRef, displayTimeoutRef = null;
 
 // Colours
-const LIGHTEST = "#effedd";
-const LIGHT = "#add795";
-const DARK = "#588d77";
-const DARKEST = "#122d3e";
-const NIGHT = "#001818";
+const LIGHTEST = "#ffffff";
+const LIGHT = "#ff7775";
+const DARK = "#0090c6";
+const DARKEST = "#b60000";
+const NIGHT = "#000000";
 
 // Character names
 const DAISY = "daisy";
