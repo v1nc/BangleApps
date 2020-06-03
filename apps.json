@@ -1860,6 +1860,7 @@
     "version":"0.01",
     "description": "A terminal inspired clock.",
     "tags": "clock",
+    "type":"clock",
     "readme": "README.md",
     "allow_emulator":true,
     "storage": [
