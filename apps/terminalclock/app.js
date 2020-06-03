@@ -18,10 +18,15 @@ function draw() {
   var time = (" "+h).substr(-2) + ":" + ("0"+m).substr(-2);
   // Reset the state of the graphics library
   g.reset();
+  //set BG color
+  g.setColor(BGC);
+  g.fillRect(0, 0, g.getWidth(), g.getHeight());
   // draw the current time (4x size 7 segment)
   g.setFont("7x11Numeric7Seg",4);
   g.setFontAlign(1,1); // align right bottom
   g.setColor(FGC);
+  g.setBgColor(BGC);
+
   g.drawString(time, X, Y, true /*clear background*/);
   // draw the seconds (2x size 7 segment)
   g.setFont("7x11Numeric7Seg",2);
