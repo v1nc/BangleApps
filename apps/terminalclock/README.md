@@ -1,7 +1,5 @@
-# Get Up
+# Terminal Clock
 
-Reminds you to getup every x minutes (default: 20).
+A terminal inspired clock.
 
-Sitting to long is dangerous!
-
-Sit and move time configurable in settings.
+Configurable via settings.
