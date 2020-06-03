@@ -1852,5 +1852,20 @@
       {"name":"sleepphasealarm.app.js","url":"app.js"},
       {"name":"sleepphasealarm.img","url":"app-icon.js","evaluate":true}
     ]
+  },
+  { "id": "terminalclock",
+    "name": "Terminal Clock",
+    "shortName":"Terminal Clock",
+    "icon": "app.png",
+    "version":"0.01",
+    "description": "A terminal inspired clock.",
+    "tags": "clock",
+    "readme": "README.md",
+    "allow_emulator":true,
+    "storage": [
+      {"name":"terminalclock.app.js","url":"app.js"},
+      {"name":"terminalclock.settings.js","url":"settings.js"},
+      {"name":"terminalclock.img","url":"app-icon.js","evaluate":true}
+    ]
   }
 ]
