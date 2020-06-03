@@ -81,25 +81,12 @@
       "": {
         title: `Color for ${color}`
       },
-      "Black": { value: "0x0000", format: format, onchange: onchange },
-      "Navy": { value: "0x000F", format: format, onchange: onchange },
-      "DarkGreen": { value: "0x03E0", format: format, onchange: onchange },
-      "DarkCyan": { value: "0x03EF", format: format, onchange: onchange },
-      "Maroon": { value: "0x7800", format: format, onchange: onchange },
-      "Purple": { value: "0x780F", format: format, onchange: onchange },
-      "Olive": { value: "0x7BE0", format: format, onchange: onchange },
-      "LightGray": { value: "0xC618", format: format, onchange: onchange },
-      "DarkGrey": { value: "0x7BEF", format: format, onchange: onchange },
-      "Blue": { value: "0x001F", format: format, onchange: onchange },
-      "Green": { value: "0x07E0", format: format, onchange: onchange },
-      "Cyan": { value: "0x07FF", format: format, onchange: onchange },
-      "Red": { value: "0xF800", format: format, onchange: onchange },
-      "Magenta": { value: "0xF81F", format: format, onchange: onchange },
-      "Yellow": { value: "0xFFE0", format: format, onchange: onchange },
-      "White": { value: "0xFFFF", format: format, onchange: onchange },
-      "Orange": { value: "0xFD20", format: format, onchange: onchange },
-      "GreenYellow": { value: "0xAFE5", format: format, onchange: onchange },
-      "Pink": { value: "0xF81F", format: format, onchange: onchange },
+      "Black": { value: "#000000", format: format, onchange: onchange },
+      "White": { value: "#FFFFFF", format: format, onchange: onchange },
+      "Eerie Black": { value: "#1f1f1f", format: format, onchange: onchange },
+      "Wintergreen Dream": { value: "#679480", format: format, onchange: onchange },
+      "Red": { value: "#991c1c", format: format, onchange: onchange },
+      "Vegas Gold": { value: "#C0A35B", format: format, onchange: onchange },
       "< Back": () => E.showMenu(mainMenu)
     };
     return E.showMenu(colorMenu);
