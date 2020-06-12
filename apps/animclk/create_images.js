@@ -45,13 +45,13 @@ var CanvasCycle = {
       }
     }
 
-    require("fs").writeFileSync("animclk.pixels1",img1,"binary");
-    require("fs").writeFileSync("animclk.pixels2",img2,"binary");
-    require("fs").writeFileSync("animclk.pal",pal,"binary");
+    require("fs").writeFileSync("animclk_jungle.pixels1",img1,"binary");
+    require("fs").writeFileSync("animclk_jungle.pixels2",img2,"binary");
+    require("fs").writeFileSync("animclk_jungle.pal",pal,"binary");
     console.log("Files written");
     console.log("Cycles", info.cycles);
   }
 };
 
 //http://www.effectgames.com/demos/canvascycle/
-eval(require("fs").readFileSync("V29.LBM.js").toString());
+eval(require("fs").readFileSync("V01.LBM.js").toString());
