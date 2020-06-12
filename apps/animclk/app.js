@@ -4,22 +4,22 @@ var img1height = img1.length/240;
 var img2 = require("Storage").read("animclk.pixels2");
 var img2height = img2.length/240;
 var cycle = [
-  { reverse: 0, rate: 2688, low: 200, high: 214 },
-  { reverse: 0, rate: 1995, low: 128, high: 143 },
-  { reverse: 0, rate: 1995, low: 192, high: 199 },
-  { reverse: 0, rate: 1995, low: 184, high: 191 },
-  { reverse: 0, rate: 1995, low: 176, high: 183 },
-  { reverse: 0, rate: 1995, low: 168, high: 175 },
-  { reverse: 0, rate: 1995, low: 160, high: 167 },
-  { reverse: 0, rate: 1536, low: 152, high: 159 },
-  { reverse: 0, rate: 1536, low: 144, high: 151 },
-  { reverse: 0, rate: 2304, low: 120, high: 127 },
-  { reverse: 0, rate: 2688, low: 112, high: 119 },
-  { reverse: 0, rate: 1536, low: 104, high: 111 },
-  { reverse: 0, rate: 1536, low: 96, high: 103 },
-  { reverse: 0, rate: 1995, low: 80, high: 95 },
-  { reverse: 0, rate: 1995, low: 64, high: 79 },
-  { reverse: 0, rate: 1995, low: 48, high: 63 }
+  { reverse: 0, rate: 4914, low: 170, high: 174 },
+  { reverse: 0, rate: 4914, low: 165, high: 169 },
+  { reverse: 0, rate: 1365, low: 135, high: 143 },
+  { reverse: 0, rate: 1365, low: 127, high: 134 },
+  { reverse: 0, rate: 2184, low: 119, high: 126 },
+  { reverse: 0, rate: 1365, low: 217, high: 223 },
+  { reverse: 0, rate: 2730, low: 210, high: 216 },
+  { reverse: 0, rate: 2730, low: 203, high: 209 },
+  { reverse: 0, rate: 2730, low: 196, high: 202 },
+  { reverse: 0, rate: 2730, low: 189, high: 195 },
+  { reverse: 0, rate: 2730, low: 182, high: 188 },
+  { reverse: 0, rate: 2730, low: 175, high: 181 },
+  { reverse: 0, rate: 4641, low: 160, high: 164 },
+  { reverse: 0, rate: 4641, low: 155, high: 159 },
+  { reverse: 0, rate: 4914, low: 150, high: 154 },
+  { reverse: 0, rate: 4914, low: 145, high: 149 }
 ];
 var is12Hour = (require("Storage").readJSON("setting.json",1)||{})["12hour"];
 var IX = 80, IY = 10, IBPP = 1;
