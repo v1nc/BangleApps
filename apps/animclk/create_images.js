@@ -31,7 +31,8 @@ var CanvasCycle = {
     function getPixel(x,y) {
       //421,347
       //530,350
-      return info.pixels[(x+530-240)+((y+350-240)*640)];
+      //525,240
+      return info.pixels[(x+525-240)+((y+240-240)*640)];
     }
 
     n = 0;
@@ -47,9 +48,9 @@ var CanvasCycle = {
       }
     }
 
-    require("fs").writeFileSync("tmp/animclk.pixels1",img1,"binary");
-    require("fs").writeFileSync("tmp/animclk.pixels2",img2,"binary");
-    require("fs").writeFileSync("tmp/animclk.pal",pal,"binary");
+    require("fs").writeFileSync("animclk.pixels1",img1,"binary");
+    require("fs").writeFileSync("animclk.pixels2",img2,"binary");
+    require("fs").writeFileSync("animclk.pal",pal,"binary");
     console.log("Files written");
     console.log("Cycles", info.cycles);
   }
