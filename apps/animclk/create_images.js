@@ -29,7 +29,7 @@ var CanvasCycle = {
     }
 
     function getPixel(x,y) {
-      return info.pixels[(x+640-240)+((y+480-240)*640)];
+      return info.pixels[(x+600-240)+((y+480-240)*640)];
     }
 
     n = 0;
