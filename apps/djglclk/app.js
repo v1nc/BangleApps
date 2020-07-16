@@ -1,9 +1,45 @@
-var pal = new Uint16Array(E.toArrayBuffer(E.toString(require("Storage").read("animclk.pal"))));
-var img1 = require("Storage").read("animclk.pixels1");
-var img1height = img1.length/240;
-var img2 = require("Storage").read("animclk.pixels2");
-var img2height = img2.length/240;
-var cycle = [
+var pal;
+var img1;
+var img1height;
+var img2;
+var img2height;
+var currentCycle;
+var cycleAfternoon = [
+  { reverse: 0, rate: 0, low: 167, high: 174 },
+  { reverse: 0, rate: 1536, low: 135, high: 143 },
+  { reverse: 0, rate: 1380, low: 127, high: 134 },
+  { reverse: 0, rate: 2304, low: 119, high: 126 },
+  { reverse: 0, rate: 1536, low: 217, high: 223 },
+  { reverse: 0, rate: 2841, low: 210, high: 216 },
+  { reverse: 0, rate: 2841, low: 203, high: 209 },
+  { reverse: 0, rate: 2841, low: 196, high: 202 },
+  { reverse: 0, rate: 2841, low: 189, high: 195 },
+  { reverse: 0, rate: 2841, low: 182, high: 188 },
+  { reverse: 0, rate: 2841, low: 175, high: 181 },
+  { reverse: 0, rate: 0, low: 0, high: 0 },
+  { reverse: 0, rate: 0, low: 0, high: 0 },
+  { reverse: 0, rate: 0, low: 0, high: 0 },
+  { reverse: 0, rate: 0, low: 0, high: 0 }
+];
+var cycleNight = [
+  { reverse: 0, rate: 0, low: 0, high: 0 },
+  { reverse: 0, rate: 1227, low: 150, high: 155 },
+  { reverse: 0, rate: 1536, low: 135, high: 143 },
+  { reverse: 0, rate: 1380, low: 127, high: 134 },
+  { reverse: 0, rate: 2304, low: 119, high: 126 },
+  { reverse: 0, rate: 1536, low: 217, high: 223 },
+  { reverse: 0, rate: 2841, low: 210, high: 216 },
+  { reverse: 0, rate: 2841, low: 203, high: 209 },
+  { reverse: 0, rate: 2841, low: 196, high: 202 },
+  { reverse: 0, rate: 2841, low: 189, high: 195 },
+  { reverse: 0, rate: 2841, low: 182, high: 188 },
+  { reverse: 0, rate: 2841, low: 175, high: 181 },
+  { reverse: 0, rate: 1227, low: 160, high: 164 },
+  { reverse: 0, rate: 3300, low: 165, high: 169 },
+  { reverse: 0, rate: 2994, low: 170, high: 174 },
+  { reverse: 0, rate: 1227, low: 156, high: 159 }
+];
+var cycleMorning = [
   { reverse: 0, rate: 0, low: 0, high: 0 },
   { reverse: 0, rate: 0, low: 0, high: 0 },
   { reverse: 0, rate: 0, low: 0, high: 0 },
@@ -32,8 +68,7 @@ var cgimg = {width:IW,height:IH,bpp:IBPP,transparent:0,buffer:cg.buffer};
 var locale = require("locale");
 var lastTime = "";
 
-function drawClock() {
-  var t = new Date();
+function drawClock(t) {
   var hours = t.getHours();
   var meridian = "";
   if (is12Hour) {
@@ -69,10 +104,30 @@ function drawClock() {
 }
 
 function draw() {
-  var t = (new Date()).toString();
+  var cd = new Date()
+  var h = cd.getHours();
+  var t = cd.toString();
   if (t!=lastTime) {
     lastTime = t;
-    drawClock();
+    if(h < 6 || h > 20){
+      img1 = require("Storage").read("night.pixels1");
+      img2 = require("Storage").read("night.pixels2");
+      pal = new Uint16Array(E.toArrayBuffer(E.toString(require("Storage").read("night.pal"))));
+      currentCycle = cycleNight;
+    }else if(h>=6 && h<=13){
+      img1 = require("Storage").read("morning.pixels1");
+      img2 = require("Storage").read("morning.pixels2");
+      pal = new Uint16Array(E.toArrayBuffer(E.toString(require("Storage").read("morning.pal"))));
+      currentCycle = cycleMorning
+    }else{
+      img1 = require("Storage").read("afternoon.pixels1");
+      img2 = require("Storage").read("afternoon.pixels2");
+      pal = new Uint16Array(E.toArrayBuffer(E.toString(require("Storage").read("afternoon.pal"))));
+      currentCycle = cycleAfternoon;
+    }
+    img1height = img1.length/240;
+    img2height = img2.length/240;
+    drawClock(cd);
   }
   // color cycling
   cycle.forEach(c=>{
