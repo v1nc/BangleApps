@@ -1889,5 +1889,5 @@
       {"name":"afternoon.pal","url":"afternoon.pal"},
       {"name":"djglclk.img","url":"app-icon.js","evaluate":true}
     ]
-  },
+  }
 ]
