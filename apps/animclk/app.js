@@ -4,7 +4,6 @@ var img1height = img1.length/240;
 var img2 = require("Storage").read("animclk.pixels2");
 var img2height = img2.length/240;
 var cycle = [
-  { reverse: 0, rate: 0, low: 232, high: 237 },
   { reverse: 0, rate: 0, low: 167, high: 174 },
   { reverse: 0, rate: 1536, low: 135, high: 143 },
   { reverse: 0, rate: 1380, low: 127, high: 134 },
