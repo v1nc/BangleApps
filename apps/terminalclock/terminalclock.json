@@ -1,0 +1,8 @@
+{
+  "BTN1": "timer.app.js",
+  "BTN3": "calendar.app.js",
+  "BGC" : "#1f1f1f",
+  "FGC" : "#C0A35B",
+  "EC" : "#991c1c",
+  "SC" : "#679480"
+}

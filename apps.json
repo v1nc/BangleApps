@@ -2143,5 +2143,6 @@
     {"name": "lockscreen.app.js", "url": "widget.js"},
     {"name": "lockscreen.img", "url": "app-icon.js", "evaluate": true}
    ]
+
   }
 ]
