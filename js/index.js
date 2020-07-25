@@ -15,7 +15,6 @@ httpGet("apps.json").then(apps=>{
     console.log(e);
     showToast("App List Corrupted","error");
   }
-  appJSON.sort(appSorter);
   refreshLibrary();
   refreshFilter();
 });
@@ -98,13 +97,15 @@ function handleCustomApp(appTemplate) {
       });
       console.log("Received custom app", app);
       modal.remove();
-      Comms.uploadApp(app).then(()=>{
-        Progress.hide({sticky:true});
-        resolve();
-      }).catch(e => {
-        Progress.hide({sticky:true});
-        reject(e);
-      });
+      checkDependencies(app)
+        .then(()=>Comms.uploadApp(app))
+        .then(()=>{
+          Progress.hide({sticky:true});
+          resolve();
+        }).catch(e => {
+          Progress.hide({sticky:true});
+          reject(e);
+        });
     }, false);
   });
 }
@@ -203,9 +204,11 @@ function showTab(tabname) {
 
 // Can't use chip.attributes.filterid.value here because Safari/Apple's WebView doesn't handle it
 let chips = Array.from(document.querySelectorAll('.filter-nav .chip')).map(chip => chip.getAttribute("filterid"));
-let hash = window.location.hash ? window.location.hash.slice(1) : '';
+let hash = "";
+if (window.location.hash)
+  hash = decodeURIComponent(window.location.hash.slice(1)).toLowerCase();
 
-let activeFilter = ~chips.indexOf(hash) ? hash : '';
+let activeFilter = (chips.indexOf(hash)>=0) ? hash : '';
 let activeSort = '';
 let currentSearch = activeFilter ? '' : hash;
 
@@ -223,7 +226,7 @@ function refreshSort(){
 }
 function refreshLibrary() {
   let panelbody = document.querySelector("#librarycontainer .panel-body");
-  let visibleApps = appJSON;
+  let visibleApps = appJSON.slice(); // clone so we don't mess with the original
   let favourites = SETTINGS.favourites;
 
   if (activeFilter) {
@@ -235,11 +238,11 @@ function refreshLibrary() {
   }
 
   if (currentSearch) {
-    visibleApps = visibleApps.filter(app => app.name.toLowerCase().includes(currentSearch) || app.tags.includes(currentSearch));
+    visibleApps = visibleApps.filter(app => app.name.toLowerCase().includes(currentSearch) || app.tags.includes(currentSearch) || app.id.toLowerCase().includes(currentSearch));
   }
 
+  visibleApps.sort(appSorter);
   if (activeSort) {
-    visibleApps = visibleApps.slice(); // clone the array so sort doesn't mess with original
     if (activeSort=="created" || activeSort=="modified") {
       visibleApps = visibleApps.sort((a,b) => appSortInfo[b.id][activeSort] - appSortInfo[a.id][activeSort]);
     } else throw new Error("Unknown sort type "+activeSort);
@@ -257,13 +260,14 @@ function refreshLibrary() {
     let githubMatch = window.location.href.match(/\/(\w+)\.github\.io/);
     if(githubMatch) username = githubMatch[1];
     let url = `https://github.com/${username}/BangleApps/tree/master/apps/${app.id}`;
+    let appurl = window.location.origin + window.location.pathname + "#" + encodeURIComponent(app.id);
 
     return `<div class="tile column col-6 col-sm-12 col-xs-12">
     <div class="tile-icon">
       <figure class="avatar"><img src="apps/${app.icon?`${app.id}/${app.icon}`:"unknown.png"}" alt="${escapeHtml(app.name)}"></figure><br/>
     </div>
     <div class="tile-content">
-      <p class="tile-title text-bold">${escapeHtml(app.name)} ${versionInfo}</p>
+      <p class="tile-title text-bold"><a name="${appurl}"></a>${escapeHtml(app.name)} ${versionInfo}</p>
       <p class="tile-subtitle">${getAppDescription(app)}${app.readme?`<br/>${readme}`:""}</p>
       <a href="${url}" target="_blank" class="link-github"><img src="img/github-icon-sml.png" alt="See the code on GitHub"/></a>
     </div>
@@ -341,19 +345,21 @@ function uploadApp(app) {
     if (appsInstalled.some(i => i.id === app.id)) {
       return updateApp(app);
     }
-    Comms.uploadApp(app).then((appJSON) => {
-      Progress.hide({ sticky: true });
-      if (appJSON) {
-        appsInstalled.push(appJSON);
-      }
-      showToast(app.name + ' Uploaded!', 'success');
-    }).catch(err => {
-      Progress.hide({ sticky: true });
-      showToast('Upload failed, ' + err, 'error');
-    }).finally(()=>{
-      refreshMyApps();
-      refreshLibrary();
-    });
+    checkDependencies(app)
+      .then(()=>Comms.uploadApp(app))
+      .then((appJSON) => {
+        Progress.hide({ sticky: true });
+        if (appJSON) {
+          appsInstalled.push(appJSON);
+        }
+        showToast(app.name + ' Uploaded!', 'success');
+      }).catch(err => {
+        Progress.hide({ sticky: true });
+        showToast('Upload failed, ' + err, 'error');
+      }).finally(()=>{
+        refreshMyApps();
+        refreshLibrary();
+      });
   }).catch(err => {
     showToast("Device connection failed, "+err,"error");
   });
@@ -388,11 +394,41 @@ function customApp(app) {
   });
 }
 
+/// check for dependencies the app needs and install them if required
+function checkDependencies(app, uploadOptions) {
+  let promise = Promise.resolve();
+  if (app.dependencies) {
+    Object.keys(app.dependencies).forEach(dependency=>{
+      if (app.dependencies[dependency]!="type")
+        throw new Error("Only supporting dependencies on app types right now");
+      console.log(`Searching for dependency on app type '${dependency}'`);
+      let found = appsInstalled.find(app=>app.type==dependency);
+      if (found)
+        console.log(`Found dependency in installed app '${found.id}'`);
+      else {
+        let foundApps = appJSON.filter(app=>app.type==dependency);
+        if (!foundApps.length) throw new Error(`Dependency of '${dependency}' listed, but nothing satisfies it!`);
+        console.log(`Apps ${foundApps.map(f=>`'${f.id}'`).join("/")} implement '${dependency}'`);
+        found = foundApps[0]; // choose first app in list
+        console.log(`Dependency not installed. Installing app id '${found.id}'`);
+        promise = promise.then(()=>new Promise((resolve,reject)=>{
+          console.log(`Install dependency '${dependency}':'${found.id}'`);
+          return Comms.uploadApp(found).then(appJSON => {
+            if (appJSON) appsInstalled.push(appJSON);
+          });
+        }));
+      }
+    });
+  }
+  return promise;
+}
+
 function updateApp(app) {
   if (app.custom) return customApp(app);
   return getInstalledApps().then(() => {
     // a = from appid.info, app = from apps.json
     let remove = appsInstalled.find(a => a.id === app.id);
+    if (remove.files===undefined) remove.files="";
     // no need to remove files which will be overwritten anyway
     remove.files = remove.files.split(',')
       .filter(f => f !== app.id + '.info')
@@ -410,8 +446,9 @@ function updateApp(app) {
   }).then(()=>{
     showToast(`Updating ${app.name}...`);
     appsInstalled = appsInstalled.filter(a=>a.id!=app.id);
-    return Comms.uploadApp(app);
-  }).then((appJSON) => {
+    return checkDependencies(app);
+  }).then(()=>Comms.uploadApp(app)
+  ).then((appJSON) => {
     if (appJSON) appsInstalled.push(appJSON);
     showToast(app.name+" Updated!", "success");
     refreshMyApps();
@@ -549,15 +586,17 @@ function installMultipleApps(appIds, promptName) {
         let app = apps.shift();
         if (app===undefined) return resolve();
         Progress.show({title:`${app.name} (${appCount-apps.length}/${appCount})`,sticky:true});
-        Comms.uploadApp(app,"skip_reset").then((appJSON) => {
-          Progress.hide({sticky:true});
-          if (appJSON) appsInstalled.push(appJSON);
-          showToast(`(${appCount-apps.length}/${appCount}) ${app.name} Uploaded`);
-          upload();
-        }).catch(function() {
-          Progress.hide({sticky:true});
-          reject();
-        });
+        checkDependencies(app,"skip_reset")
+          .then(()=>Comms.uploadApp(app,"skip_reset"))
+          .then((appJSON) => {
+            Progress.hide({sticky:true});
+            if (appJSON) appsInstalled.push(appJSON);
+            showToast(`(${appCount-apps.length}/${appCount}) ${app.name} Uploaded`);
+            upload();
+          }).catch(function() {
+            Progress.hide({sticky:true});
+            reject();
+          });
       }
       upload();
     });
@@ -622,6 +661,7 @@ let librarySearchInput = document.querySelector("#searchform input");
 librarySearchInput.value = currentSearch;
 librarySearchInput.addEventListener('input', evt => {
   currentSearch = evt.target.value.toLowerCase();
+  window.location.hash = "#"+encodeURIComponent(currentSearch);
   refreshLibrary();
 });
 
